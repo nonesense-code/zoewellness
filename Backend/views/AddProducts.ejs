@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+    />
+    <title>Document</title>
+  </head>
+  <body>
+    <nav class="bg-white shadow-md top-0 z-10 fixed w-full">
+      <div
+        class="container mx-auto px-4 py-4 flex justify-between items-center"
+      >
+        <div>
+          <a href="/" class="text-xl font-bold text-blue-500">ZOE</a>
+        </div>
+        <div>
+          <ul class="flex space-x-4">
+            <li>
+              <a
+                href="/"
+                class="text-gray-600 text-lg font-bold hover:text-blue-500 cursor-pointer"
+                >Home</a
+              >
+            </li>
+            <li>
+              <a
+                href="/addproducts"
+                class="text-gray-600 text-lg font-bold hover:text-blue-500 cursor-pointer"
+                >Add Products</a
+              >
+            </li>
+            <li
+              class="text-gray-600 text-lg font-bold hover:text-blue-500 cursor-pointer"
+              onclick="openCartModal()"
+            >
+              Cart (<span id="cart-count">0</span>)
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="mt-20 mx-auto max-w-screen-lg">
+      <h1 class="text-2xl font-bold text-center mb-6">Product List</h1>
+      <form
+        action="/add-product"
+        method="POST"
+        class="mb-8 bg-white p-4 shadow-md rounded-lg"
+      >
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label for="name" class="block text-sm font-medium text-gray-700"
+              >Name</label
+            >
+            <input
+              type="text"
+              name="name"
+              id="name"
+              required
+              class="mt-1 block w-full p-2 border border-gray-300 rounded-md uppercase"
+            />
+          </div>
+          <div>
+            <label for="volume" class="block text-sm font-medium text-gray-700"
+              >Volume</label
+            >
+            <input
+              type="text"
+              name="volume"
+              id="volume"
+              required
+              class="mt-1 block w-full p-2 border border-gray-300 rounded-md uppercase"
+            />
+          </div>
+          <div>
+            <label for="rate" class="block text-sm font-medium text-gray-700"
+              >Rate</label
+            >
+            <input
+              type="number"
+              name="rate"
+              id="rate"
+              required
+              class="mt-1 block w-full p-2 border border-gray-300 rounded-md uppercase"
+            />
+          </div>
+          <div>
+            <label for="pv" class="block text-sm font-medium text-gray-700"
+              >PV</label
+            >
+            <input
+              type="number"
+              name="pv"
+              id="pv"
+              required
+              step="any"
+              class="mt-1 block w-full p-2 border border-gray-300 rounded-md uppercase"
+            />
+          </div>
+          <div>
+            <label for="bv" class="block text-sm font-medium text-gray-700"
+              >BV</label
+            >
+            <input
+              type="number"
+              name="bv"
+              id="bv"
+              required
+              step="any"
+              class="mt-1 block w-full p-2 border border-gray-300 rounded-md uppercase"
+            />
+          </div>
+        </div>
+        <button
+          type="submit"
+          class="mt-4 w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
+        >
+          Add Product
+        </button>
+      </form>
+    </div>
+  </body>
+</html>

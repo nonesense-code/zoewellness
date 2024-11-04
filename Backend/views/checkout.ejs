@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Checkout - Purchase Your Products</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  </head>
+  <body class="bg-gray-100">
+    <nav class="bg-white">
+      <div
+        class="container mx-auto px-4 py-4 flex justify-between items-center"
+      >
+        <div>
+          <a href="/" class="text-xl font-bold text-blue-500">ZOE</a>
+        </div>
+        <div>
+          <ul class="flex space-x-4">
+            <li>
+              <a href="/" class="text-gray-600 hover:text-blue-500">Home</a>
+            </li>
+            <li>
+              <a href="/addproducts" class="text-gray-600 hover:text-blue-500"
+                >Add Products</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="container mx-auto p-6">
+      <div class="text-center mb-8">
+        <h1 class="text-2xl font-bold text-gray-800">
+          Checkout Your Selected Products
+        </h1>
+        <p class="text-gray-600">Quality products for quality lives.</p>
+      </div>
+
+      <div class="bg-white p-4 rounded-lg mb-6">
+        <h2 class="text-lg font-semibold mb-4">User Details</h2>
+        <form id="userDetailsForm" class="mb-4">
+          <div class="mb-4">
+            <label for="name" class="block text-sm font-medium text-gray-700"
+              >Name</label
+            >
+            <input
+              type="text"
+              id="name"
+              name="name"
+              required
+              class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+              placeholder="Enter your name"
+            />
+          </div>
+          <div class="mb-4">
+            <label for="id" class="block text-sm font-medium text-gray-700"
+              >ID</label
+            >
+            <input
+              type="text"
+              id="id"
+              name="id"
+              required
+              class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+              placeholder="Enter your ID"
+            />
+          </div>
+          <div class="mb-4">
+            <label for="phone" class="block text-sm font-medium text-gray-700"
+              >Phone Number</label
+            >
+            <input
+              type="tel"
+              id="phone"
+              name="phone"
+              required
+              class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+              placeholder="Enter your phone number"
+            />
+          </div>
+          <div class="text-center">
+            <button
+              type="button"
+              id="addDetails"
+              class="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200"
+            >
+              Add
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div id="bill" class="bg-white p-4 rounded-lg mb-6">
+        <div id="addedDetails" class="mt-4 text-left hidden">
+          <div
+            id="detailsContainer"
+            class="p-2 flex flex-col items-start justify-start mb-4"
+          >
+            <p class="text-gray-700" id="userDetailsDisplay"></p>
+          </div>
+        </div>
+
+        <% if (items && items.length > 0) { %>
+        <div class="overflow-x-auto border-2 border-black/80 rounded-lg">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th
+                  class="px-4 py-2 text-left text-sm font-medium text-gray-600"
+                >
+                  Product
+                </th>
+                <th
+                  class="px-4 py-2 text-left text-sm font-medium text-gray-600"
+                >
+                  Volume
+                </th>
+                <th
+                  class="px-4 py-2 text-left text-sm font-medium text-gray-600"
+                >
+                  Rate
+                </th>
+                <th
+                  class="px-4 py-2 text-left text-sm font-medium text-gray-600"
+                >
+                  PV
+                </th>
+                <th
+                  class="px-4 py-2 text-left text-sm font-medium text-gray-600"
+                >
+                  BV
+                </th>
+                <th
+                  class="px-4 py-2 text-left text-sm font-medium text-gray-600"
+                >
+                  Quantity
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <% let totalRate = 0; let totalPV = 0; let totalBV = 0; if
+              (items.length === 0) { %>
+              <tr>
+                <td
+                  colspan="6"
+                  class="px-4 py-2 text-center text-sm text-gray-700"
+                >
+                  There is no data available.
+                </td>
+              </tr>
+              <% } else { items.forEach(({ product, quantity }) => { totalRate
+              += product.rate * quantity; totalPV += product.pv * quantity;
+              totalBV += product.bv * quantity; %>
+              <tr>
+                <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-700">
+                  <%= product.name %>
+                </td>
+                <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-700">
+                  <%= product.volume %>
+                </td>
+                <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-700">
+                  <%= product.rate.toFixed(2) %>
+                </td>
+                <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-700">
+                  <%= (product.pv * quantity).toFixed(2) %>
+                </td>
+                <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-700">
+                  <%= (product.bv * quantity).toFixed(2) %>
+                </td>
+                <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-700">
+                  <%= quantity %>
+                </td>
+              </tr>
+              <% }); } %>
+            </tbody>
+            <tfoot class="bg-gray-50">
+              <tr>
+                <th
+                  class="px-4 py-2 text-left text-sm font-medium text-gray-600"
+                >
+                  Total
+                </th>
+                <th
+                  class="px-4 py-2 text-left text-sm font-medium text-gray-600"
+                ></th>
+                <th
+                  class="px-4 py-2 text-left text-sm font-medium text-gray-600"
+                >
+                  <%=totalRate%>
+                </th>
+                <th
+                  class="px-4 py-2 text-left text-sm font-medium text-gray-600"
+                >
+                  <%=totalPV%>
+                </th>
+                <th
+                  class="px-4 py-2 text-left text-sm font-medium text-gray-600"
+                >
+                  <%=totalBV%>
+                </th>
+                <th
+                  class="px-4 py-2 text-left text-sm font-medium text-gray-600"
+                ></th>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
+        <% } else { %>
+        <p class="text-red-600 text-center">No items found in the cart.</p>
+        <% } %>
+      </div>
+
+      <div class="text-center mt-4">
+        <button
+          id="saveBill"
+          class="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200"
+        >
+          Save Bill as Image
+        </button>
+      </div>
+
+      <footer class="text-center mt-8">
+        <p class="text-gray-600">
+          &copy; 2024 Your Company Name. All rights reserved.
+        </p>
+      </footer>
+    </div>
+
+    <script>
+      let detailsAdded = false;
+
+      document
+        .getElementById("addDetails")
+        .addEventListener("click", function () {
+          const name = document.getElementById("name").value;
+          const id = document.getElementById("id").value;
+          const phone = document.getElementById("phone").value;
+
+          if (name && id && phone) {
+            const detailsContainer =
+              document.getElementById("detailsContainer");
+            const userDetailsDisplay =
+              document.getElementById("userDetailsDisplay");
+
+            userDetailsDisplay.innerHTML = `Name: ${name}<br>ID: ${id}<br>Phone: ${phone}`;
+            detailsContainer.classList.remove("hidden");
+            document.getElementById("addedDetails").classList.remove("hidden");
+
+            detailsAdded = true;
+
+            document.getElementById("userDetailsForm").reset();
+          } else {
+            alert("Please fill in all fields.");
+          }
+        });
+
+      document
+        .getElementById("saveBill")
+        .addEventListener("click", function () {
+          if (!detailsAdded) {
+            alert("Please add user details before saving the bill.");
+            return;
+          }
+
+          const billElement = document.getElementById("bill");
+
+          html2canvas(billElement, {
+            backgroundColor: "transparent",
+            useCORS: true,
+            logging: true,
+          }).then((canvas) => {
+            const whiteCanvas = document.createElement("canvas");
+            const context = whiteCanvas.getContext("2d");
+            whiteCanvas.width = canvas.width;
+            whiteCanvas.height = canvas.height;
+            context.fillStyle = "white";
+            context.fillRect(0, 0, whiteCanvas.width, whiteCanvas.height);
+            context.drawImage(canvas, 0, 0);
+
+            const link = document.createElement("a");
+            link.href = whiteCanvas.toDataURL("image/png");
+            link.download = "bill.png";
+            link.click();
+          });
+        });
+    </script>
+  </body>
+</html>

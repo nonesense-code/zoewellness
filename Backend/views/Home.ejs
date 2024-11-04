@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product List</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+    />
+    <script>
+      let cart = {};
+      let cartCount = 0;
+
+      // Load cart from local storage on page load
+      window.onload = function () {
+        const storedCart = localStorage.getItem("cart");
+        if (storedCart) {
+          cart = JSON.parse(storedCart);
+          cartCount = Object.values(cart).reduce((a, b) => a + b.count, 0);
+          updateCartCounter();
+        }
+      };
+
+      function addToCart(product, itemId) {
+        if (cart[itemId]) {
+          cart[itemId].count++;
+        } else {
+          cart[itemId] = { name: product, count: 1 };
+        }
+        cartCount = Object.values(cart).reduce((a, b) => a + b.count, 0);
+        updateCartCounter();
+        saveCartToLocalStorage();
+      }
+
+      function updateCartCounter() {
+        document.getElementById("cart-count").innerText = cartCount;
+      }
+
+      function removeFromCart(itemId) {
+        if (cart[itemId]) {
+          delete cart[itemId];
+          cartCount = Object.values(cart).reduce((a, b) => a + b.count, 0);
+          updateCartCounter();
+          saveCartToLocalStorage();
+          openCartModal();
+        }
+      }
+
+      function saveCartToLocalStorage() {
+        localStorage.setItem("cart", JSON.stringify(cart));
+      }
+
+      function openCartModal() {
+        const modal = document.getElementById("cart-modal");
+        const cartItemsList = document.getElementById("cart-items");
+        cartItemsList.innerHTML = "";
+
+        if (cartCount === 0) {
+          cartItemsList.innerHTML = "<li>No items in the cart.</li>";
+        } else {
+          for (const [itemId, item] of Object.entries(cart)) {
+            cartItemsList.innerHTML += ` 
+            <li class="py-1 flex justify-between items-center">
+              ${item.name} (${item.count}) 
+              <button onclick="removeFromCart('${itemId}')" class="bg-red-500 text-white ml-4 px-2 rounded-md">Remove</button>
+            </li>`;
+          }
+        }
+        modal.classList.remove("hidden");
+      }
+
+      function closeCartModal() {
+        document.getElementById("cart-modal").classList.add("hidden");
+      }
+
+      function checkout() {
+        // Prepare the product IDs and counts for checkout
+        const cartDetails = Object.entries(cart).map(([itemId, item]) => ({
+          id: itemId,
+          count: item.count,
+        }));
+
+        // Create a query string from the cart details
+        const queryString = cartDetails
+          .map((item) => `${item.id}=${item.count}`)
+          .join("&");
+
+        window.location.href = `/purchase/items?${queryString}`;
+      }
+
+      function toggleEdit(itemId) {
+        const itemRow = document.getElementById(`item-${itemId}`);
+        const editForm = document.getElementById(`edit-form-${itemId}`);
+
+        if (editForm.classList.contains("hidden")) {
+          editForm.classList.remove("hidden");
+          itemRow.classList.add("hidden");
+        } else {
+          const nameInput = document.getElementById(
+            `name-input-${itemId}`
+          ).value;
+          const volumeInput = document.getElementById(
+            `volume-input-${itemId}`
+          ).value;
+          const rateInput = document.getElementById(
+            `rate-input-${itemId}`
+          ).value;
+          const pvInput = document.getElementById(`pv-input-${itemId}`).value;
+          const bvInput = document.getElementById(`bv-input-${itemId}`).value;
+
+          document.getElementById(`name-display-${itemId}`).innerText =
+            nameInput;
+          document.getElementById(`volume-display-${itemId}`).innerText =
+            volumeInput;
+          document.getElementById(`rate-display-${itemId}`).innerText =
+            rateInput;
+          document.getElementById(`pv-display-${itemId}`).innerText = pvInput;
+          document.getElementById(`bv-display-${itemId}`).innerText = bvInput;
+
+          editForm.classList.add("hidden");
+          itemRow.classList.remove("hidden");
+        }
+      }
+    </script>
+  </head>
+
+  <body>
+    <nav class="bg-white shadow-md top-0 z-10 fixed w-full">
+      <div
+        class="container mx-auto px-4 py-4 flex justify-between items-center"
+      >
+        <div>
+          <a href="/" class="text-xl font-bold text-blue-500">ZOE</a>
+        </div>
+        <div>
+          <ul class="flex space-x-4">
+            <li>
+              <a
+                href="/"
+                class="text-gray-600 text-lg font-bold hover:text-blue-500 cursor-pointer"
+                >Home</a
+              >
+            </li>
+            <li>
+              <a
+                href="/addproducts"
+                class="text-gray-600 text-lg font-bold hover:text-blue-500 cursor-pointer"
+                >Add Products</a
+              >
+            </li>
+            <li
+              class="text-gray-600 text-lg font-bold hover:text-blue-500 cursor-pointer"
+              onclick="openCartModal()"
+            >
+              Cart (<span id="cart-count">0</span>)
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="mt-12">
+      <div class="container mx-auto p-4">
+        <h1 class="text-2xl font-bold text-center mb-6">
+          Available Product List
+        </h1>
+
+        <table
+          id="product-table"
+          class="table-auto w-full bg-white shadow-md rounded-lg overflow-hidden"
+        >
+          <thead>
+            <tr
+              class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal"
+            >
+              <th class="py-3 px-6 text-left">S.N</th>
+              <th class="py-3 px-6 text-left">Name</th>
+              <th class="py-3 px-6 text-left">Volume</th>
+              <th class="py-3 px-6 text-left">Rate</th>
+              <th class="py-3 px-6 text-left">PV</th>
+              <th class="py-3 px-6 text-left">BV</th>
+              <th class="py-3 px-6 text-left">Actions</th>
+              <th class="py-3 px-6 text-left">Add to Cart</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% items.forEach((item, index) => { %>
+            <tr
+              id="item-<%= item._id %>"
+              class="border-b border-gray-200 bg-gray-50 hover:bg-gray-100"
+            >
+              <td class="py-3 px-6 text-left"><%= index + 1 %></td>
+              <td class="py-3 px-6 text-left">
+                <span id="name-display-<%= item._id %>"><%= item.name %></span>
+                <input
+                  type="text"
+                  name="name"
+                  value="<%= item.name %>"
+                  class="hidden uppercase edit-field mt-1 block w-full p-1 border border-gray-300 rounded-md"
+                  id="name-input-<%= item._id %>"
+                />
+              </td>
+              <td class="py-3 px-6 text-left">
+                <span id="volume-display-<%= item._id %>"
+                  ><%= item.volume %></span
+                >
+                <input
+                  type="text"
+                  name="volume"
+                  value="<%= item.volume %>"
+                  class="hidden edit-field mt-1 block w-full p-1 border border-gray-300 rounded-md uppercase"
+                  id="volume-input-<%= item._id %>"
+                />
+              </td>
+              <td class="py-3 px-6 text-left">
+                <span id="rate-display-<%= item._id %>"><%= item.rate %></span>
+                <input
+                  type="number"
+                  name="rate"
+                  value="<%= item.rate %>"
+                  class="hidden edit-field mt-1 block w-full p-1 border border-gray-300 rounded-md uppercase"
+                  id="rate-input-<%= item._id %>"
+                />
+              </td>
+              <td class="py-3 px-6 text-left">
+                <span id="pv-display-<%= item._id %>"><%= item.pv %></span>
+                <input
+                  type="number"
+                  name="pv"
+                  value="<%= item.pv %>"
+                  class="hidden edit-field mt-1 block w-full p-1 border border-gray-300 rounded-md"
+                  id="pv-input-<%= item._id %>"
+                />
+              </td>
+              <td class="py-3 px-6 text-left">
+                <span id="bv-display-<%= item._id %>"><%= item.bv %></span>
+                <input
+                  type="number"
+                  name="bv"
+                  value="<%= item.bv %>"
+                  class="hidden edit-field mt-1 block w-full p-1 border border-gray-300 rounded-md"
+                  id="bv-input-<%= item._id %>"
+                />
+              </td>
+              <td class="py-3 px-6 text-left flex space-x-2">
+                <button
+                  onclick="toggleEdit('<%= item._id %>')"
+                  class="bg-blue-500 text-white px-3 py-1 rounded-md"
+                >
+                  Edit
+                </button>
+              </td>
+              <td class="py-3 px-6 text-left">
+                <button
+                  onclick="addToCart('<%= item.name %>', '<%= item._id %>')"
+                  class="bg-green-500 text-white px-3 py-1 rounded-md"
+                >
+                  Add to Cart
+                </button>
+              </td>
+            </tr>
+            <tr id="edit-form-<%= item._id %>" class="hidden">
+              <td colspan="7" class="px-6 py-3">
+                <div class="flex space-x-4">
+                  <input
+                    type="text"
+                    id="name-input-<%= item._id %>"
+                    class="border border-gray-300 p-2 rounded"
+                    placeholder="Name"
+                    value="<%= item.name %>"
+                  />
+                  <input
+                    type="text"
+                    id="volume-input-<%= item._id %>"
+                    class="border border-gray-300 p-2 rounded"
+                    placeholder="Volume"
+                    value="<%= item.volume %>"
+                  />
+                  <input
+                    type="number"
+                    id="rate-input-<%= item._id %>"
+                    class="border border-gray-300 p-2 rounded"
+                    placeholder="Rate"
+                    value="<%= item.rate %>"
+                  />
+                  <input
+                    type="number"
+                    id="pv-input-<%= item._id %>"
+                    class="border border-gray-300 p-2 rounded"
+                    placeholder="PV"
+                    value="<%= item.pv %>"
+                  />
+                  <input
+                    type="number"
+                    id="bv-input-<%= item._id %>"
+                    class="border border-gray-300 p-2 rounded"
+                    placeholder="BV"
+                    value="<%= item.bv %>"
+                  />
+                  <button
+                    onclick="toggleEdit('<%= item._id %>')"
+                    class="bg-blue-500 text-white px-4 rounded"
+                  >
+                    Save
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+
+      <div
+        id="cart-modal"
+        class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden"
+      >
+        <div class="bg-white rounded-lg p-4 w-80">
+          <h2 class="text-lg font-bold mb-2">Shopping Cart</h2>
+          <ul id="cart-items" class="mb-4"></ul>
+          <button
+            onclick="checkout()"
+            class="bg-green-500 text-white rounded px-4 py-2 ml-2"
+          >
+            Checkout
+          </button>
+          <button
+            onclick="closeCartModal()"
+            class="bg-gray-500 text-white rounded px-4 py-2"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
