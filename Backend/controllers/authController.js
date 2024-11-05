@@ -28,7 +28,11 @@ module.exports.registerUser = async (req, res) => {
           });
 
           let token = generateToken(userData);
-          res.redirect("/users/login");
+          if (token) {
+            res.redirect("/users/login");
+          } else {
+            res.send({ message: "Error Registering New Account" });
+          }
         } catch (createError) {
           console.error("Error creating user:", createError.message);
           return res.status(500).send("Error creating user");
@@ -43,7 +47,6 @@ module.exports.registerUser = async (req, res) => {
 
 module.exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
-
   try {
     if (!email || !password) {
       return res

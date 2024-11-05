@@ -8,10 +8,6 @@ const {
 } = require("../controllers/authController");
 const isLoggedIn = require("../utils/isLoggedIn");
 
-router.get("/", isLoggedIn, (req, res) => {
-  res.send("User route is working perfectly fine.");
-});
-
 router.get("/register", isAuthorized, (req, res) => {
   res.render("register");
 });
