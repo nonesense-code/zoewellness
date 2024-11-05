@@ -14,31 +14,21 @@ module.exports.registerUser = async (req, res) => {
       return res.status(409).send("User already registered");
     }
 
-    bcrypt.genSalt(10, (err, salt) => {
-      if (err) return res.status(500).send("Error generating salt");
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(password, salt);
 
-      bcrypt.hash(password, salt, async (err, hash) => {
-        if (err) return res.status(500).send("Error hashing password");
-
-        try {
-          let userData = await userModel.create({
-            fullname,
-            email,
-            password: hash,
-          });
-
-          let token = generateToken(userData);
-          if (token) {
-            res.redirect("/users/login");
-          } else {
-            res.send({ message: "Error Registering New Account" });
-          }
-        } catch (createError) {
-          console.error("Error creating user:", createError.message);
-          return res.status(500).send("Error creating user");
-        }
-      });
+    let userData = await userModel.create({
+      fullname,
+      email,
+      password: hash,
     });
+
+    let token = generateToken(userData);
+    if (token) {
+      return res.redirect("/users/login");
+    } else {
+      return res.status(500).send({ message: "Error Registering New Account" });
+    }
   } catch (error) {
     console.error("Error in registerUser:", error.message);
     return res.status(500).send("Server error");
