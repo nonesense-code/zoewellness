@@ -11,7 +11,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   </head>
   <body class="bg-gray-100">
-    <nav class="bg-white">
+    <nav class="bg-white shadow-md top-0 z-10 fixed w-full">
       <div
         class="container mx-auto px-4 py-4 flex justify-between items-center"
       >
@@ -21,10 +21,16 @@
         <div>
           <ul class="flex space-x-4">
             <li>
-              <a href="/" class="text-gray-600 hover:text-blue-500">Home</a>
+              <a
+                href="/"
+                class="text-gray-600 text-lg font-bold hover:text-blue-500 cursor-pointer"
+                >Home</a
+              >
             </li>
             <li>
-              <a href="/addproducts" class="text-gray-600 hover:text-blue-500"
+              <a
+                href="/addproducts"
+                class="text-gray-600 text-lg font-bold hover:text-blue-500 cursor-pointer"
                 >Add Products</a
               >
             </li>
@@ -32,7 +38,7 @@
         </div>
       </div>
     </nav>
-    <div class="container mx-auto p-6">
+    <div class="container mx-auto p-6 mt-16">
       <div class="text-center mb-8">
         <h1 class="text-2xl font-bold text-gray-800">
           Checkout Your Selected Products
@@ -44,7 +50,7 @@
         <h2 class="text-lg font-semibold mb-4">User Details</h2>
         <form id="userDetailsForm" class="mb-4">
           <div class="mb-4">
-            <label for="name" class="block text-sm font-medium text-gray-700"
+            <label for="name" class="block text-sm font-bold text-gray-700"
               >Name</label
             >
             <input
@@ -57,7 +63,7 @@
             />
           </div>
           <div class="mb-4">
-            <label for="id" class="block text-sm font-medium text-gray-700"
+            <label for="id" class="block text-sm font-bold text-gray-700"
               >ID</label
             >
             <input
@@ -70,7 +76,7 @@
             />
           </div>
           <div class="mb-4">
-            <label for="phone" class="block text-sm font-medium text-gray-700"
+            <label for="phone" class="block text-sm font-bold text-gray-700"
               >Phone Number</label
             >
             <input
@@ -80,6 +86,19 @@
               required
               class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
               placeholder="Enter your phone number"
+            />
+          </div>
+          <div class="mb-4">
+            <label for="phone" class="block text-sm font-bold text-gray-700"
+              >Address</label
+            >
+            <input
+              type="text"
+              id="address"
+              name="address"
+              required
+              class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+              placeholder="Enter address"
             />
           </div>
           <div class="text-center">
@@ -110,101 +129,136 @@
             <thead class="bg-gray-50">
               <tr>
                 <th
-                  class="px-4 py-2 text-left text-sm font-medium text-gray-600"
+                  class="px-2 py-2 text-left text-sm font-bold tracking-wider text-gray-600"
                 >
                   Product
                 </th>
                 <th
-                  class="px-4 py-2 text-left text-sm font-medium text-gray-600"
+                  class="px-2 py-2 text-center text-sm font-bold text-gray-600"
                 >
                   Volume
                 </th>
+
                 <th
-                  class="px-4 py-2 text-left text-sm font-medium text-gray-600"
+                  class="px-2 py-2 text-center text-sm font-bold text-gray-600"
                 >
                   Rate
                 </th>
                 <th
-                  class="px-4 py-2 text-left text-sm font-medium text-gray-600"
+                  class="px-2 py-2 text-center text-sm font-bold text-gray-600"
                 >
                   PV
                 </th>
                 <th
-                  class="px-4 py-2 text-left text-sm font-medium text-gray-600"
+                  class="px-2 py-2 text-center text-sm font-bold text-gray-600"
                 >
                   BV
                 </th>
                 <th
-                  class="px-4 py-2 text-left text-sm font-medium text-gray-600"
+                  class="px-2 py-2 text-center text-sm font-bold text-gray-600"
                 >
                   Quantity
+                </th>
+                <th
+                  class="px-2 py-2 text-center text-sm font-bold text-gray-600"
+                >
+                  Total PV
+                </th>
+                <th
+                  class="px-2 py-2 text-center text-sm font-bold text-gray-600"
+                >
+                  Total BV
+                </th>
+                <th
+                  class="px-2 py-2 text-center text-sm font-bold text-gray-600"
+                >
+                  Total Amount
                 </th>
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
-              <% let totalRate = 0; let totalPV = 0; let totalBV = 0; if
-              (items.length === 0) { %>
+              <% let totalRate = 0; let totalPV = 0; let totalBV = 0; let
+              totalQuantity = 0; if (items.length === 0) { %>
               <tr>
                 <td
                   colspan="6"
-                  class="px-4 py-2 text-center text-sm text-gray-700"
+                  class="px-2 py-2 text-center text-sm text-gray-700"
                 >
                   There is no data available.
                 </td>
               </tr>
-              <% } else { items.forEach(({ product, quantity }) => { totalRate
-              += product.rate * quantity; totalPV += product.pv * quantity;
-              totalBV += product.bv * quantity; %>
-              <tr>
-                <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-700">
+              <% } else { items.forEach(({ product, quantity },index) => {
+              totalRate += product.rate * quantity; totalQuantity +=
+              Number(quantity); totalPV += product.pv * quantity; totalBV +=
+              product.bv * quantity; %>
+              <tr class="<%= index % 2 === 0 ? 'bg-gray-50' : 'bg-gray-200' %>">
+                <td class="px-2 py-2 text-sm text-left text-gray-700">
                   <%= product.name %>
                 </td>
-                <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-700">
+                <td class="px-2 py-2 text-sm text-center text-gray-700">
                   <%= product.volume %>
                 </td>
-                <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-700">
+                <td class="px-2 py-2 text-sm text-center text-gray-700">
                   <%= product.rate.toFixed(2) %>
                 </td>
-                <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-700">
-                  <%= (product.pv * quantity).toFixed(2) %>
+                <td class="px-2 py-2 text-sm text-center text-gray-700">
+                  <%= product.pv %>
                 </td>
-                <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-700">
-                  <%= (product.bv * quantity).toFixed(2) %>
+                <td class="px-2 py-2 text-sm text-center text-gray-700">
+                  <%= product.bv %>
                 </td>
-                <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-700">
+                <td class="px-2 py-2 text-sm text-center text-gray-700">
                   <%= quantity %>
+                </td>
+                <td class="px-2 py-2 text-sm text-center text-gray-700">
+                  <%= (product.pv*quantity).toFixed(2) %>
+                </td>
+                <td class="px-2 py-2 text-sm text-center text-gray-700">
+                  <%= (product.bv*quantity).toFixed(2) %>
+                </td>
+                <td class="px-2 py-2 text-sm text-center text-gray-700">
+                  <%= (product.rate*quantity).toFixed(2) %>
                 </td>
               </tr>
               <% }); } %>
             </tbody>
             <tfoot class="bg-gray-50">
               <tr>
-                <th
-                  class="px-4 py-2 text-left text-sm font-medium text-gray-600"
-                >
+                <th class="px-2 py-2 text-left text-sm font-bold text-gray-600">
                   Total
                 </th>
                 <th
-                  class="px-4 py-2 text-left text-sm font-medium text-gray-600"
+                  class="px-2 py-2 text-center text-sm font-bold text-gray-600"
                 ></th>
                 <th
-                  class="px-4 py-2 text-left text-sm font-medium text-gray-600"
-                >
-                  <%=totalRate%>
-                </th>
-                <th
-                  class="px-4 py-2 text-left text-sm font-medium text-gray-600"
-                >
-                  <%=totalPV%>
-                </th>
-                <th
-                  class="px-4 py-2 text-left text-sm font-medium text-gray-600"
-                >
-                  <%=totalBV%>
-                </th>
-                <th
-                  class="px-4 py-2 text-left text-sm font-medium text-gray-600"
+                  class="px-2 py-2 text-center text-sm font-bold text-gray-600"
                 ></th>
+                <th
+                  class="px-2 py-2 text-center text-sm font-bold text-gray-600"
+                ></th>
+                <th
+                  class="px-2 py-2 text-center text-sm font-bold text-gray-600"
+                ></th>
+                <th
+                  class="px-2 py-2 text-center text-sm font-bold text-gray-600"
+                >
+                  <%= totalQuantity %>
+                </th>
+                <th
+                  class="px-2 py-2 text-center text-sm font-bold text-gray-600"
+                >
+                  <%= totalPV.toFixed(2) %>
+                </th>
+                <th
+                  class="px-2 py-2 text-center text-sm font-bold text-gray-600"
+                >
+                  <%= totalBV.toFixed(2) %>
+                </th>
+                <th
+                  class="px-2 py-2 text-center text-sm font-bold text-gray-600"
+                >
+                  Rs.<%= totalRate.toFixed(2) %>
+                </th>
               </tr>
             </tfoot>
           </table>
@@ -240,14 +294,15 @@
           const name = document.getElementById("name").value;
           const id = document.getElementById("id").value;
           const phone = document.getElementById("phone").value;
+          const address = document.getElementById("address").value;
 
-          if (name && id && phone) {
+          if (name && id && phone && address) {
             const detailsContainer =
               document.getElementById("detailsContainer");
             const userDetailsDisplay =
               document.getElementById("userDetailsDisplay");
 
-            userDetailsDisplay.innerHTML = `Name: ${name}<br>ID: ${id}<br>Phone: ${phone}`;
+            userDetailsDisplay.innerHTML = `Name: ${name}<br>ID: ${id}<br>Phone: ${phone}<br>Address: ${address}`;
             detailsContainer.classList.remove("hidden");
             document.getElementById("addedDetails").classList.remove("hidden");
 

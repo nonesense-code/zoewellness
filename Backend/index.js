@@ -1,114 +1,42 @@
 require("dotenv").config();
 const express = require("express");
 const path = require("path");
-const Product = require("./models/Products");
+const cookieParser = require("cookie-parser");
+const bodyParser = require("body-parser");
+const compression = require("compression");
 
 const app = express();
-app.use(express.urlencoded({ extended: true }));
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
 
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "ejs");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, "public")));
+app.use(cookieParser());
+app.use(compression());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
+const homeRouter = require("../Backend/routes/home");
+const checkoutRouter = require("../Backend/routes/checkout");
+const addProductsRouter = require("../Backend/routes/addProducts");
+const editRouter = require("../Backend/routes/edit");
+const deleteRouter = require("../Backend/routes/delete");
+const searchRouter = require("../Backend/routes/search_filter");
+const userRouter = require("./routes/userRouter");
+const ownerRouter = require("./routes/ownerRouter");
 
-app.get("/", async (req, res) => {
-  try {
-    const products = await Product.find();
-    res.render("Home", { items: products });
-  } catch (err) {
-    console.error("Error fetching products:", err);
-    res.status(500).send("Error loading products");
-  }
-});
+app.use("/", homeRouter);
+app.use("/orders", checkoutRouter);
+app.use("/addproducts", addProductsRouter);
+app.use("/edit-product", editRouter);
+app.use("/delete-product", deleteRouter);
+app.use("/search", searchRouter);
+app.use("/users", userRouter);
+app.use("/authorizedparty", ownerRouter);
 
-app.get("/orders", (req, res) => {
-  res.render("Orders");
-});
+const port = process.env.PORT || 5000;
 
-app.get("/addproducts", (req, res) => {
-  res.render("AddProducts");
-});
-
-app.post("/add-product", async (req, res) => {
-  const { name, volume, qnt, rate, pv, bv } = req.body;
-
-  try {
-    if (!name || !volume || !rate || !pv || !bv) {
-      console.log("All fields must be filled out!");
-      return res.redirect("/");
-    }
-
-    const existingProduct = await Product.findOne({ name: name.toUpperCase() });
-    if (existingProduct) {
-      console.log("Product already exists!");
-      return res.redirect("/");
-    }
-
-    const newProduct = new Product({
-      name: name.toUpperCase(),
-      volume: volume.toUpperCase(),
-      qnt: qnt || null,
-      rate,
-      pv,
-      bv,
-    });
-    await newProduct.save();
-    console.log("Product added successfully!");
-    res.redirect("/");
-  } catch (err) {
-    console.error("Error adding product:", err);
-    res.redirect("/");
-  }
-});
-
-app.post("/edit-product/:id", async (req, res) => {
-  const { id } = req.params;
-  const { name, volume, qnt, rate, pv, bv } = req.body;
-  console.log(name);
-
-  try {
-    if (!name || !volume || !rate || !pv || !bv) {
-      console.log("All fields must be filled out!");
-      return res.redirect("/");
-    }
-
-    await Product.findByIdAndUpdate(id, {
-      name: name.toUpperCase(),
-      volume: volume.toUpperCase(),
-      qnt: qnt || null,
-      rate,
-      pv,
-      bv,
-    });
-    console.log("Product updated successfully!");
-    res.redirect("/");
-  } catch (err) {
-    console.error("Error updating product:", err);
-    res.redirect("/");
-  }
-});
-
-app.get("/purchase/items", async (req, res) => {
-  const query = req.query;
-  const items = [];
-
-  try {
-    for (const [id, quantity] of Object.entries(query)) {
-      const product = await Product.findById(id);
-      if (product) {
-        items.push({ product, quantity });
-      }
-    }
-
-    res.render("checkout", { items });
-  } catch (error) {
-    console.error("Error fetching product details:", error);
-    res.status(500).send("Error fetching product details");
-  }
-});
-
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+app.listen(port, "0.0.0.0", () => {
+  console.log(`Server running at http://0.0.0.0:${port}`);
 });
