@@ -10,7 +10,7 @@ router.post("/", authorizedUser);
 
 router.get("/logout", (req, res) => {
   res.cookie("allowed", "");
-  res.redirect("/users/login");
+  res.redirect("/");
 });
 
 module.exports = router;
