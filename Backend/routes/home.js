@@ -6,7 +6,6 @@ const isLoggedIn = require("../utils/isLoggedIn");
 router.get("/", isLoggedIn, async (req, res) => {
   try {
     const allowedCookie = req.cookies.allowed;
-
     const cookieExist = allowedCookie !== undefined && allowedCookie !== "";
     const products = await Product.find();
     res.render("Home", { items: products, cookieExist });
