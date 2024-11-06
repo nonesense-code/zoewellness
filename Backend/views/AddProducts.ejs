@@ -9,6 +9,100 @@
     />
     <title>Document</title>
     <script>
+ let cart = {};
+      let cartCount = 0;
+
+      window.onload = function () {
+        const storedCart = localStorage.getItem("cart");
+        if (storedCart) {
+          cart = JSON.parse(storedCart);
+          cartCount = Object.keys(cart).length;
+          updateCartCounter();
+        }
+      };
+
+      function addToCart(product, itemId) {
+        const quantityInput = document.getElementById(`quantity-${itemId}`);
+        const quantity = parseInt(quantityInput.value) || 1;
+
+        if (!cart[itemId]) {
+          cart[itemId] = { name: product, count: quantity };
+          cartCount++;
+        } else {
+          cart[itemId].count += quantity;
+        }
+
+        updateCartCounter();
+        saveCartToLocalStorage();
+        quantityInput.value = 1;
+      }
+
+      function updateCartCounter() {
+        document.getElementById("cart-count").innerText = cartCount;
+      }
+
+      function updateQuantity(itemId, newQuantity) {
+        if (cart[itemId]) {
+          cart[itemId].count = newQuantity > 0 ? newQuantity : 1;
+          saveCartToLocalStorage();
+          openCartModal();
+        }
+      }
+
+      function removeFromCart(itemId) {
+        if (cart[itemId]) {
+          delete cart[itemId];
+          cartCount--;
+          updateCartCounter();
+          saveCartToLocalStorage();
+          openCartModal();
+        }
+      }
+
+      function saveCartToLocalStorage() {
+        localStorage.setItem("cart", JSON.stringify(cart));
+      }
+
+      function openCartModal() {
+        const modal = document.getElementById("cart-modal");
+        const cartItemsList = document.getElementById("cart-items");
+        cartItemsList.innerHTML = "";
+
+        if (cartCount === 0) {
+          cartItemsList.innerHTML = "<li>No items in the cart.</li>";
+        } else {
+          for (const [itemId, item] of Object.entries(cart)) {
+            cartItemsList.innerHTML += `
+            <li class="py-1 flex justify-between items-center">
+              ${item.name}
+              <input type="number" min="1" value="${item.count}"
+                onchange="updateQuantity('${itemId}', this.value)"
+                class="w-12 text-center border rounded mx-2" />
+              <button onclick="removeFromCart('${itemId}')"
+                class="bg-red-500 text-white ml-4 px-2 rounded-md">Remove</button>
+            </li>`;
+          }
+        }
+        modal.classList.remove("hidden");
+      }
+
+      function closeCartModal() {
+        document.getElementById("cart-modal").classList.add("hidden");
+      }
+
+      function checkout() {
+        const cartDetails = Object.entries(cart).map(([itemId, item]) => ({
+          id: itemId,
+          count: item.count,
+        }));
+
+        const queryString = cartDetails
+          .map((item) => `${item.id}=${item.count}`)
+          .join("&");
+
+        window.location.href = `/orders/id?${queryString}`;
+      }
+
        async function fetchSuggestions() {
         const input = document.getElementById("search-input").value;
 
