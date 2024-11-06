@@ -17,7 +17,7 @@ const authorizedUser = async (req, res) => {
     }
     const token = generateToken({ email: authorizedEmail });
     res.cookie("allowed", token, { httpOnly: true });
-    return res.redirect("/users/register");
+    return res.redirect("/");
   } catch (error) {
     console.error("Error during login:", error);
     return res.status(500).json({ message: "Internal Server Error" });
