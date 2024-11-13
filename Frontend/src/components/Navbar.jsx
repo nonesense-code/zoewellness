@@ -156,7 +156,7 @@ function Navbar({ cart, setCart, id, setId }) {
               </div>
             </div>
           </div>
-          <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+          <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 mx-2 sm:pr-0">
             <form onSubmit={handleSearchSubmit} className="relative">
               <input
                 type="text"
