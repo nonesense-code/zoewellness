@@ -42,7 +42,6 @@ function FilterProduct({ cart, setCart }) {
     fetchData();
   }, []);
 
-  // Filter products based on the product ID from the URL
   const filteredProducts = id
     ? products.filter((product) => product._id === id)
     : products;

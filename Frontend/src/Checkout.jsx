@@ -17,6 +17,7 @@ function Checkout({ data }) {
   const [pv, setPV] = useState(null);
   const [bv, setBV] = useState(null);
   const [totalQuantity, setTotalQuantity] = useState(0);
+  
   const url = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {

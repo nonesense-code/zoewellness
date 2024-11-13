@@ -7,6 +7,7 @@ function Cart({ cart, setCart, data, setData }) {
   const [loading, setLoading] = useState(true);
   const [id, setId] = useState([]);
   const [price, setPrice] = useState(0);
+  
   const url = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
