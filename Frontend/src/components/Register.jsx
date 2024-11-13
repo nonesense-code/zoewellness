@@ -32,7 +32,6 @@ function Register() {
       });
 
       if (response.status === 201) {
-        console.log("User registered successfully", response.data);
         navigate("/login");
       }
     } catch (error) {

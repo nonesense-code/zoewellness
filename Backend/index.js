@@ -17,8 +17,16 @@ app.use(cookieParser());
 app.use(compression());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
 const frontendURL = process.env.frontendURL;
-app.use(cors({ origin: frontendURL }));
+const corsOptions = {
+  origin: frontendURL,
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
+
 const homeRouter = require("../Backend/routes/home");
 const checkoutRouter = require("../Backend/routes/checkout");
 const addProductsRouter = require("../Backend/routes/addProducts");

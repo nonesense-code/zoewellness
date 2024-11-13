@@ -4,6 +4,6 @@ const isLoggedIn = require("../utils/isLoggedIn");
 
 const { editProducts } = require("../controllers/editController");
 
-router.post("/:id", isLoggedIn, editProducts);
+router.post("/:id", editProducts);
 
 module.exports = router;

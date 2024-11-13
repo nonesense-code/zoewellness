@@ -17,13 +17,10 @@ function Login() {
         password,
       });
 
-      console.log("Response:", response);
 
       if (response.data.token) {
-        // Store token in a cookie instead of localStorage
-        document.cookie = `token=${response.data.token}; max-age=604800; path=/`; // Expires in 7 days
+        document.cookie = `token=${response.data.token}; max-age=604800; path=/`; 
 
-        // Redirect to home page
         navigate("/");
       } else {
         console.error("Token is not available in the response.");

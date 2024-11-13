@@ -8,10 +8,6 @@ function Table({ cart, setCart }) {
   const url = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
-    console.log("Cart updated");
-  }, [cart]);
-
-  useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(`${url}/api/product`);

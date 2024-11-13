@@ -4,12 +4,12 @@ const isLoggedIn = require("../utils/isLoggedIn");
 
 const { addProducts } = require("../controllers/productsController");
 
-router.get("/", isLoggedIn, (req, res) => {
+router.get("/", (req, res) => {
   const allowedCookie = req.cookies.allowed;
   const cookieExist = allowedCookie !== undefined && allowedCookie !== "";
   res.render("AddProducts", { cookieExist });
 });
 
-router.post("/add", isLoggedIn, addProducts);
+router.post("/add", addProducts);
 
 module.exports = router;

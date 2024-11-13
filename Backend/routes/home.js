@@ -3,7 +3,7 @@ const router = express.Router();
 const Product = require("../models/Products");
 const isLoggedIn = require("../utils/isLoggedIn");
 
-router.get("/", isLoggedIn, async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const allowedCookie = req.cookies.allowed;
     const cookieExist = allowedCookie !== undefined && allowedCookie !== "";
