@@ -17,6 +17,7 @@ function Checkout({ data }) {
   const [pv, setPV] = useState(null);
   const [bv, setBV] = useState(null);
   const [totalQuantity, setTotalQuantity] = useState(0);
+  const url = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
     const total = products.reduce((total, product) => {
@@ -38,7 +39,7 @@ function Checkout({ data }) {
 
         if (ids.length > 0) {
           const requests = ids.map((itemId) => {
-            return axios.get(`http://192.168.254.9:3001/api/product/${itemId}`);
+            return axios.get(`${url}/api/product/${itemId}`);
           });
           const responses = await Promise.all(requests);
           const productsData = responses.map((response) => response.data);

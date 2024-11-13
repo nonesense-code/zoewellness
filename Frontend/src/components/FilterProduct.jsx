@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom"; // Import useParams
+import { useParams } from "react-router-dom";
 
 function FilterProduct({ cart, setCart }) {
   const [products, setProducts] = useState([]);
