@@ -7,17 +7,15 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const url = import.meta.env.VITE_BACKEND_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        "http://192.168.254.9:3001/users/login",
-        {
-          email,
-          password,
-        }
-      );
+      const response = await axios.post(`${url}/users/login`, {
+        email,
+        password,
+      });
 
       console.log("Response:", response);
 

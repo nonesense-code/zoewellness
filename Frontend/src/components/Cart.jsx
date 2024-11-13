@@ -7,6 +7,7 @@ function Cart({ cart, setCart, data, setData }) {
   const [loading, setLoading] = useState(true);
   const [id, setId] = useState([]);
   const [price, setPrice] = useState(0);
+  const url = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
     const storedData = JSON.parse(localStorage.getItem("data")) || [];
@@ -34,7 +35,7 @@ function Cart({ cart, setCart, data, setData }) {
 
         if (id.length > 0) {
           const requests = id.map((itemId) =>
-            axios.get(`http://192.168.254.9:3001/api/product/${itemId}`)
+            axios.get(`${url}/api/product/${itemId}`)
           );
           const responses = await Promise.all(requests);
 

@@ -41,7 +41,7 @@ function Table({ cart, setCart }) {
 
   const handleQuantityChange = (productId, value) => {
     setQuantities((prev) => {
-      const newQuantity = Math.max(value, 1); // Ensure quantity is at least 1
+      const newQuantity = Math.max(value, 1);
 
       const updatedQuantities = { ...prev, [productId]: newQuantity };
 
