@@ -16,7 +16,7 @@ const databaseConnection = async () => {
 databaseConnection();
 
 const userSchema = mongoose.Schema({
-  fullname: String,
+  username: String,
   email: String,
   password: String,
 });

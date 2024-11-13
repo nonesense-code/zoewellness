@@ -8,15 +8,7 @@ const {
 } = require("../controllers/authController");
 const isLoggedIn = require("../utils/isLoggedIn");
 
-router.get("/register", isAuthorized, (req, res) => {
-  res.render("register");
-});
-
-router.get("/login", (req, res) => {
-  res.render("login");
-});
-
-router.post("/register", isAuthorized, registerUser);
+router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.get("/logout", logoutUser);
 

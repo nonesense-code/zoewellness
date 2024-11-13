@@ -30,6 +30,10 @@ module.exports.searchProducts = async (req, res) => {
       },
     ]);
 
+    if (products.length === 0) {
+      return res.status(404).send("No products found.");
+    }
+
     res.render("Home", { items: products, cookieExist });
   } catch (error) {
     console.error("Error fetching product:", error);
