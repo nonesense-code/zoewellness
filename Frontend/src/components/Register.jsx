@@ -10,6 +10,8 @@ function Register() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const url = import.meta.env.VITE_BACKEND_URL;
+
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -23,14 +25,11 @@ function Register() {
     setLoading(true);
 
     try {
-      const response = await axios.post(
-        "http://192.168.254.9:3001/users/register",
-        {
-          username,
-          email,
-          password,
-        }
-      );
+      const response = await axios.post(`${url}`, {
+        username,
+        email,
+        password,
+      });
 
       if (response.status === 201) {
         console.log("User registered successfully", response.data);

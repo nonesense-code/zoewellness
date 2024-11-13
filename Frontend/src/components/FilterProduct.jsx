@@ -6,8 +6,8 @@ function FilterProduct({ cart, setCart }) {
   const [products, setProducts] = useState([]);
   const [quantities, setQuantities] = useState({});
   const [cartItems, setCartItems] = useState(new Set());
+  const url = import.meta.env.VITE_BACKEND_URL;
 
-  // Get the product ID from the URL
   const { id } = useParams();
 
   useEffect(() => {
@@ -17,9 +17,7 @@ function FilterProduct({ cart, setCart }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          "http://192.168.254.9:3001/api/product"
-        );
+        const response = await axios.get(`${url}/api/product`);
         if (Array.isArray(response.data)) {
           setProducts(response.data);
 

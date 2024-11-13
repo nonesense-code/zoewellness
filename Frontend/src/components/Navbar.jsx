@@ -56,13 +56,13 @@ function Navbar({ cart, setCart, id, setId }) {
     navigate("/login");
   };
 
+  const url = import.meta.env.VITE_BACKEND_URL;
+
   async function fetchSuggestions(query) {
     const input = query.toUpperCase();
     if (input) {
       try {
-        const response = await axios.get(
-          `http://192.168.254.9:3001/search/item/${input}`
-        );
+        const response = await axios.get(`${url}/${input}`);
         setSuggestions(response.data);
       } catch (error) {
         console.error("Error fetching suggestions:", error);
@@ -83,7 +83,7 @@ function Navbar({ cart, setCart, id, setId }) {
 
     try {
       const response = await axios.get(
-        `http://192.168.254.9:3001/search/item/${normalizedSearchQuery}`
+        `${url}/search/item/${normalizedSearchQuery}`
       );
       if (response.data.length > 0) {
         const productId = response.data[0]._id; // Assuming the first match is the correct one
