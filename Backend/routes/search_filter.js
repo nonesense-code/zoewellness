@@ -9,9 +9,9 @@ router.get("/item/:name", async (req, res) => {
 
   try {
     const matchingItems = await Product.find({
+      // Apply regex to remove spaces and ignore case for the name field in the database
       name: {
-        $regex: normalizedSearchQuery,
-        $options: "i",
+        $regex: new RegExp(normalizedSearchQuery.split("").join("\\s*"), "i"),
       },
     }).select("name");
 

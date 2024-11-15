@@ -79,14 +79,19 @@ function Navbar({ cart, setCart, id, setId }) {
       .replace(/[^a-zA-Z0-9\s-]/g, "")
       .replace(/\s+/g, " ")
       .replace(/-/g, " ")
+      .replace(/\s/g, "")
       .toLowerCase();
+
+    console.log(normalizedSearchQuery);
 
     try {
       const response = await axios.get(
         `${url}/search/item/${normalizedSearchQuery}`
       );
+      console.log(`${url}/search/item/${normalizedSearchQuery}`);
       if (response.data.length > 0) {
         const productId = response.data[0]._id;
+        setSuggestions([]);
         navigate(`/product/${productId}`);
       } else {
         document.getElementById("search-input").focus();
@@ -175,7 +180,7 @@ function Navbar({ cart, setCart, id, setId }) {
                 id="search-input"
                 name="search_items"
                 placeholder="Search..."
-                className="w-72 mx-2 h-10 border border-gray-300 rounded-full pl-4 pr-10 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                className="w-72 mx-2 h-10 placeholder:text-white/70 text-gray-800 font-semibold outline-none bg-gray-500 border-2 border-gray-300 rounded-full px-4"
                 required
                 value={searchQuery}
                 onChange={(e) => {
@@ -191,18 +196,20 @@ function Navbar({ cart, setCart, id, setId }) {
               </button>
               <div
                 id="suggestions"
-                className={`absolute top-12 w-full bg-white rounded-lg shadow-lg overflow-y-auto max-h-40 ${
-                  suggestions.length > 0 ? "" : "hidden"
+                className={`absolute top-12 w-full bg-white shadow-lg rounded-lg border border-gray-200 overflow-y-auto max-h-40 transition-opacity duration-300 ${
+                  suggestions.length > 0 ? "opacity-100" : "opacity-0 hidden"
                 }`}
               >
-                <ul id="suggestions-list" className="space-y-2 py-2 px-4">
+                <ul id="suggestions-list" className="divide-y divide-gray-200">
                   {suggestions.map((suggestion) => (
                     <li
                       key={suggestion._id}
-                      className="cursor-pointer hover:bg-gray-300 p-2"
+                      className="cursor-pointer hover:bg-gray-100 p-3 rounded-md transition-colors duration-200"
                       onClick={() => handleSuggestionClick(suggestion.name)}
                     >
-                      {suggestion.name}
+                      <span className="text-gray-800 font-medium">
+                        {suggestion.name}
+                      </span>
                     </li>
                   ))}
                 </ul>
@@ -223,7 +230,7 @@ function Navbar({ cart, setCart, id, setId }) {
                   <span className="sr-only">Open user menu</span>
                   <img
                     alt="Profile"
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                    src="https://www.gravatar.com/avatar?d=mp&f=y"
                     className="h-8 w-8 rounded-full"
                   />
                 </MenuButton>
