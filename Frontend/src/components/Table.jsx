@@ -59,7 +59,7 @@ function Table({ cart, setCart }) {
 
   const handleAddOrRemoveCart = (item) => {
     const isInCart = cartItems.has(item._id);
-  
+
     setQuantities((prev) => {
       const updatedQuantities = {
         ...prev,
@@ -67,175 +67,185 @@ function Table({ cart, setCart }) {
       };
       return updatedQuantities;
     });
-  
+
     setCartItems((prev) => {
       const updatedCart = new Set(prev);
-  
+
       if (isInCart) {
         updatedCart.delete(item._id);
       } else {
         updatedCart.add(item._id);
       }
-  
+
       const updatedCartData = Array.from(updatedCart).map((id) => ({
         id,
         quantity: quantities[id] || 1,
       }));
-  
+
       const updatedCartCount = updatedCart.size;
       setCart(updatedCartCount);
-  
+
       localStorage.setItem("data", JSON.stringify(updatedCartData));
-  
-      localStorage.setItem("cart", updatedCartCount > 0 ? updatedCartCount.toString() : "0");
-  
+
+      localStorage.setItem(
+        "cart",
+        updatedCartCount > 0 ? updatedCartCount.toString() : "0"
+      );
+
       return updatedCart;
     });
   };
-  
 
   return (
     <div className="mt-16">
-      {loading && <Loader />}
-      <div className="container mx-auto p-4">
-        <h1 className="text-2xl font-semibold text-center mb-4 text-white">
-          Product List
-        </h1>
-
-        <table className="bg-gray-800 table-auto w-full shadow-md rounded-t-lg border-2 border-white/60">
-          <thead>
-            <tr className="dark:bg-gray-700 text-white uppercase text-xs leading-normal">
-              <th className="p-4 border-b border-gray-600 font-semibold text-center">
-                S.N
-              </th>
-              <th className="p-4 border-b border-gray-600 font-semibold text-left">
-                Name
-              </th>
-              <th className="p-4 border-b border-gray-600 font-semibold text-center">
-                Volume
-              </th>
-              <th className="p-4 border-b border-gray-600 font-semibold text-center">
-                Rate
-              </th>
-              <th className="p-4 border-b border-gray-600 font-semibold text-center">
-                PV
-              </th>
-              <th className="p-4 border-b border-gray-600 font-semibold text-center">
-                BV
-              </th>
-              <th className="p-4 border-b border-gray-600 font-semibold text-center">
-                Quantity
-              </th>
-              <th className="p-4 border-b border-gray-600 font-semibold text-center">
-                Add to Cart
-              </th>
-            </tr>
-          </thead>
-          <tbody className="border-2 border-white/50 overflow-hidden">
-            {products.length > 0 ? (
-              products.map((item, index) => (
-                <tr
-                  key={item._id || index}
-                  className="border-b border-gray-600 bg-gray-800 hover:bg-gray-700"
-                >
-                  <td className="py-2 px-4 text-white text-center">
-                    {index + 1}
-                  </td>
-                  <td className="py-2 px-4 text-white text-left">
-                    {item.name}
-                  </td>
-                  <td className="py-2 px-4 text-white text-center">
-                    {item.volume || "N/A"}
-                  </td>
-                  <td className="py-2 px-4 text-white text-center">
-                    {item.rate || "$..."}
-                  </td>
-                  <td className="py-2 px-4 text-white text-center">
-                    {item.pv}
-                  </td>
-                  <td className="py-2 px-4 text-white text-center">
-                    {item.bv}
-                  </td>
-                  <td className="py-2 px-4 text-left flex items-center justify-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() =>
-                        handleQuantityChange(item._id, quantities[item._id] - 1)
-                      }
-                      className="flex items-center justify-center h-8 w-8 text-white bg-gray-700 rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400"
-                    >
-                      <svg
-                        className="h-4 w-4"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 18 2"
+      {loading ? (
+        <Loader />
+      ) : (
+        <div className="container mx-auto">
+          <h1 className="pt-8 text-2xl font-bold text-center mb-4 text-white">
+            Product List
+          </h1>
+          <table className="bg-gray-800 table-auto w-full rounded-t-lg border-2 border-white/60">
+            <thead>
+              <tr className="dark:bg-gray-700 text-white uppercase text-xs leading-normal">
+                <th className="p-4 border-b border-gray-600 font-semibold text-center">
+                  S.N
+                </th>
+                <th className="p-4 border-b border-gray-600 font-semibold text-left">
+                  Name
+                </th>
+                <th className="p-4 border-b border-gray-600 font-semibold text-center">
+                  Volume
+                </th>
+                <th className="p-4 border-b border-gray-600 font-semibold text-center">
+                  Rate
+                </th>
+                <th className="p-4 border-b border-gray-600 font-semibold text-center">
+                  PV
+                </th>
+                <th className="p-4 border-b border-gray-600 font-semibold text-center">
+                  BV
+                </th>
+                <th className="p-4 border-b border-gray-600 font-semibold text-center">
+                  Quantity
+                </th>
+                <th className="p-4 border-b border-gray-600 font-semibold text-center">
+                  Add to Cart
+                </th>
+              </tr>
+            </thead>
+            <tbody className="border-2 border-white/50 overflow-hidden">
+              {products.length > 0 ? (
+                products.map((item, index) => (
+                  <tr
+                    key={item._id || index}
+                    className="border-b border-gray-600 bg-gray-800 hover:bg-gray-700"
+                  >
+                    <td className="py-2 px-4 text-white text-center">
+                      {index + 1}
+                    </td>
+                    <td className="py-2 px-4 text-white text-left">
+                      {item.name}
+                    </td>
+                    <td className="py-2 px-4 text-white text-center">
+                      {item.volume || "N/A"}
+                    </td>
+                    <td className="py-2 px-4 text-white text-center">
+                      {item.rate || "$..."}
+                    </td>
+                    <td className="py-2 px-4 text-white text-center">
+                      {item.pv}
+                    </td>
+                    <td className="py-2 px-4 text-white text-center">
+                      {item.bv}
+                    </td>
+                    <td className="py-2 px-4 text-left flex items-center justify-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleQuantityChange(
+                            item._id,
+                            quantities[item._id] - 1
+                          )
+                        }
+                        className="flex items-center justify-center h-8 w-8 text-white bg-gray-700 rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400"
                       >
-                        <path
-                          stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M1 1h16"
-                        />
-                      </svg>
-                    </button>
+                        <svg
+                          className="h-4 w-4"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 18 2"
+                        >
+                          <path
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M1 1h16"
+                          />
+                        </svg>
+                      </button>
 
-                    <input
-                      type="number"
-                      min="1"
-                      className="w-12 text-center bg-gray-700 text-white px-1 py-2 rounded-md border-2 border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      value={quantities[item._id] || "0"}
-                      onChange={(e) =>
-                        handleQuantityChange(item._id, e.target.value)
-                      }
-                    />
+                      <input
+                        type="number"
+                        min="1"
+                        className="w-12 text-center bg-gray-700 text-white px-1 py-2 rounded-md border-2 border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        value={quantities[item._id] || "0"}
+                        onChange={(e) =>
+                          handleQuantityChange(item._id, e.target.value)
+                        }
+                      />
 
-                    <button
-                      type="button"
-                      onClick={() =>
-                        handleQuantityChange(item._id, quantities[item._id] + 1)
-                      }
-                      className="flex items-center justify-center h-8 w-8 text-white bg-gray-700 rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400"
-                    >
-                      <svg
-                        className="h-4 w-4"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 18 18"
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleQuantityChange(
+                            item._id,
+                            quantities[item._id] + 1
+                          )
+                        }
+                        className="flex items-center justify-center h-8 w-8 text-white bg-gray-700 rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400"
                       >
-                        <path
-                          stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M9 1v16M1 9h16"
-                        />
-                      </svg>
-                    </button>
-                  </td>
+                        <svg
+                          className="h-4 w-4"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 18 18"
+                        >
+                          <path
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M9 1v16M1 9h16"
+                          />
+                        </svg>
+                      </button>
+                    </td>
 
-                  <td className="py-2 px-4 text-center">
-                    <button
-                      onClick={() => handleAddOrRemoveCart(item)}
-                      className={`${
-                        cartItems.has(item._id) ? "bg-red-600" : "bg-blue-500"
-                      } text-white py-2 px-2 font-semibold rounded-md text-sm`}
-                    >
-                      {cartItems.has(item._id) ? "Remove" : "Add"}
-                    </button>
+                    <td className="py-2 px-4 text-center">
+                      <button
+                        onClick={() => handleAddOrRemoveCart(item)}
+                        className={`${
+                          cartItems.has(item._id) ? "bg-red-600" : "bg-blue-500"
+                        } text-white py-2 px-2 font-semibold rounded-md text-sm`}
+                      >
+                        {cartItems.has(item._id) ? "Remove" : "Add"}
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="8" className="text-center text-white py-4">
+                    No Products Available
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="8" className="text-center text-white py-4">
-                  No Products Available
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }

@@ -94,19 +94,16 @@ function Cart({ cart, setCart, data, setData }) {
   };
 
   return (
-    <section className="bg-white antialiased dark:bg-gray-900">
-      {loading && (
-        <Loader />
-      )}
+    <section className="antialiased bg-gray-900">
+      {loading && <Loader />}
       {products.length > 0 ? (
         <div className="mx-auto max-w-screen-xl min-h-screen px-4 2xl:px-0 py-20">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl">
+          <h2 className="text-xl font-semibold text-white sm:text-2xl">
             Cart Items
           </h2>
           <div className="mt-6 sm:mt-8 md:gap-6 lg:flex lg:items-start xl:gap-8 gap-8 flex flex-row flex-wrap items-start justify-center">
             <div className="gap-2 md:gap-6 flex-col lg:flex lg:items-start xl:gap-8">
               {products.map((product) => {
-                console.log(product.product._id);
                 const productQuantity =
                   data.find((item) => item.id === product.product._id)
                     ?.quantity || 0;
@@ -116,7 +113,7 @@ function Cart({ cart, setCart, data, setData }) {
                     className="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl"
                   >
                     <div className="space-y-6">
-                      <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-6">
+                      <div className="rounded-lg border p-4 shadow-sm border-gray-700 bg-gray-800 md:p-6">
                         <div className="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
                           <Link to="#" className="shrink-0 md:order-1">
                             <img
@@ -150,10 +147,10 @@ function Cart({ cart, setCart, data, setData }) {
                                     "decrease"
                                   )
                                 }
-                                className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
+                                className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border focus:outline-none focus:ring-2 border-gray-600 bg-gray-700 hover:bg-gray-600 focus:ring-gray-700"
                               >
                                 <svg
-                                  className="h-2.5 w-2.5 text-gray-900 dark:text-white"
+                                  className="h-2.5 w-2.5 text-white"
                                   aria-hidden="true"
                                   xmlns="http://www.w3.org/2000/svg"
                                   fill="none"
@@ -172,7 +169,7 @@ function Cart({ cart, setCart, data, setData }) {
                                 type="text"
                                 value={productQuantity}
                                 readOnly
-                                className="w-10 shrink-0 border-0 bg-transparent text-center text-sm font-medium text-gray-900 focus:outline-none focus:ring-0 dark:text-white"
+                                className="w-10 shrink-0 border-0 bg-transparent text-center text-sm font-medium focus:outline-none focus:ring-0 text-white"
                               />
                               <button
                                 type="button"
@@ -185,7 +182,7 @@ function Cart({ cart, setCart, data, setData }) {
                                 className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
                               >
                                 <svg
-                                  className="h-2.5 w-2.5 text-gray-900 dark:text-white"
+                                  className="h-2.5 w-2.5  dtext-white"
                                   aria-hidden="true"
                                   xmlns="http://www.w3.org/2000/svg"
                                   fill="none"
@@ -202,21 +199,21 @@ function Cart({ cart, setCart, data, setData }) {
                               </button>
                             </div>
                             <div className="text-end md:order-4 md:w-32">
-                              <p className="text-base font-bold text-gray-900 dark:text-white">
+                              <p className="text-base font-bold text-white">
                                 {product.product.rate || "0.00"}
                               </p>
                             </div>
                           </div>
 
                           <div className="w-full min-w-0 flex-1 space-y-4 md:order-2 md:max-w-md">
-                            <div className="text-base font-medium text-gray-900 hover:underline dark:text-white">
+                            <div className="text-base font-medium hover:underline text-white">
                               {product.product.name || "Product Name"}
                             </div>
 
                             <div className="flex items-center gap-4">
                               <button
                                 type="button"
-                                className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-900 hover:underline dark:text-gray-400 dark:hover:text-white"
+                                className="inline-flex items-center text-sm font-medium hover:text-gray-900 hover:underline text-gray-100 dark:hover:text-white"
                               >
                                 <svg
                                   className="me-1.5 h-5 w-5"
@@ -274,18 +271,18 @@ function Cart({ cart, setCart, data, setData }) {
               })}
             </div>
             <div className="mx-auto mt-6 max-w-4xl flex-1 space-y-6 lg:mt-0 lg:w-full">
-              <div className="space-y-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:p-6">
-                <p className="text-xl font-semibold text-gray-900 dark:text-white">
+              <div className="space-y-4 rounded-lg border p-4 shadow-sm border-gray-700 bg-gray-800 sm:p-6">
+                <p className="text-xl font-semibold text-white">
                   Order summary
                 </p>
 
                 <div className="sp`ace-y-4">
                   <div className="space-y-2">
                     <dl className="flex items-center justify-between gap-4">
-                      <dt className="text-base font-normal text-gray-500 dark:text-gray-400">
+                      <dt className="text-base font-normal text-gray-400">
                         Original price
                       </dt>
-                      <dd className="text-base font-medium text-gray-900 dark:text-white">
+                      <dd className="text-base font-medium text-white">
                         ${price}
                       </dd>
                     </dl>
@@ -303,7 +300,7 @@ function Cart({ cart, setCart, data, setData }) {
                       <dt className="text-base font-normal text-gray-500 dark:text-gray-400">
                         Store Pickup
                       </dt>
-                      <dd className="text-base font-medium text-gray-900 dark:text-white">
+                      <dd className="text-base font-medium text-white">
                         $0.00
                       </dd>
                     </dl>
@@ -312,19 +309,15 @@ function Cart({ cart, setCart, data, setData }) {
                       <dt className="text-base font-normal text-gray-500 dark:text-gray-400">
                         Tax
                       </dt>
-                      <dd className="text-base font-medium text-gray-900 dark:text-white">
+                      <dd className="text-base font-medium text-white">
                         $0.00
                       </dd>
                     </dl>
                   </div>
 
                   <dl className="flex items-center justify-between gap-4 border-t border-gray-200 pt-2 dark:border-gray-700">
-                    <dt className="text-base font-bold text-gray-900 dark:text-white">
-                      Total
-                    </dt>
-                    <dd className="text-base font-bold text-gray-900 dark:text-white">
-                      $0.00
-                    </dd>
+                    <dt className="text-base font-bold text-white">Total</dt>
+                    <dd className="text-base font-bold text-white">$0.00</dd>
                   </dl>
                 </div>
 
