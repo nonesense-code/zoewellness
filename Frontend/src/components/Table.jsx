@@ -59,46 +59,40 @@ function Table({ cart, setCart }) {
 
   const handleAddOrRemoveCart = (item) => {
     const isInCart = cartItems.has(item._id);
-
+  
     setQuantities((prev) => {
       const updatedQuantities = {
         ...prev,
         [item._id]: isInCart ? 0 : prev[item._id] || 1,
       };
-
       return updatedQuantities;
     });
-
-    if (isInCart) {
-      setCart((prev) => Math.max(prev - 1, 0));
-
-      setCartItems((prev) => {
-        const updatedCart = new Set(prev);
+  
+    setCartItems((prev) => {
+      const updatedCart = new Set(prev);
+  
+      if (isInCart) {
         updatedCart.delete(item._id);
-        return updatedCart;
-      });
-
-      const updatedCartData = [...cartItems]
-        .filter((id) => id !== item._id)
-        .map((id) => ({
-          id,
-          quantity: quantities[id] || 0,
-        }));
-
+      } else {
+        updatedCart.add(item._id);
+      }
+  
+      const updatedCartData = Array.from(updatedCart).map((id) => ({
+        id,
+        quantity: quantities[id] || 1,
+      }));
+  
+      const updatedCartCount = updatedCart.size;
+      setCart(updatedCartCount);
+  
       localStorage.setItem("data", JSON.stringify(updatedCartData));
-    } else {
-      setCart((prev) => prev + 1);
-
-      setCartItems((prev) => new Set(prev).add(item._id));
-
-      const updatedCartData = [
-        ...JSON.parse(localStorage.getItem("data") || "[]"),
-        { id: item._id, quantity: quantities[item._id] || 1 },
-      ];
-
-      localStorage.setItem("data", JSON.stringify(updatedCartData));
-    }
+  
+      localStorage.setItem("cart", updatedCartCount > 0 ? updatedCartCount.toString() : "0");
+  
+      return updatedCart;
+    });
   };
+  
 
   return (
     <div className="mt-16">
