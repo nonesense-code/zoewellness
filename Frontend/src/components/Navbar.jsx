@@ -175,7 +175,7 @@ function Navbar({ cart, setCart, id, setId }) {
                 id="search-input"
                 name="search_items"
                 placeholder="Search..."
-                className="w-72 h-10 border border-gray-300 rounded-full pl-4 pr-10 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                className="w-72 mx-2 h-10 border border-gray-300 rounded-full pl-4 pr-10 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-400"
                 required
                 value={searchQuery}
                 onChange={(e) => {
