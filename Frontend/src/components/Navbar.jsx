@@ -62,7 +62,7 @@ function Navbar({ cart, setCart, id, setId }) {
     const input = query.toUpperCase();
     if (input) {
       try {
-        const response = await axios.get(`${url}/${input}`);
+        const response = await axios.get(`${url}/search/item/${input}`);
         setSuggestions(response.data);
       } catch (error) {
         console.error("Error fetching suggestions:", error);
@@ -76,9 +76,9 @@ function Navbar({ cart, setCart, id, setId }) {
     e.preventDefault();
 
     const normalizedSearchQuery = searchQuery
-      .replace(/[^a-zA-Z0-9\s-]/g, "") // Remove any non-alphanumeric characters except spaces and hyphens
-      .replace(/\s+/g, " ") // Normalize spaces to a single space
-      .replace(/-/g, " ") // Replace hyphens with spaces (to treat "anti-acne" and "anti acne" as same)
+      .replace(/[^a-zA-Z0-9\s-]/g, "")
+      .replace(/\s+/g, " ")
+      .replace(/-/g, " ")
       .toLowerCase();
 
     try {
@@ -86,14 +86,26 @@ function Navbar({ cart, setCart, id, setId }) {
         `${url}/search/item/${normalizedSearchQuery}`
       );
       if (response.data.length > 0) {
-        const productId = response.data[0]._id; // Assuming the first match is the correct one
+        const productId = response.data[0]._id;
         navigate(`/product/${productId}`);
       } else {
-        document.getElementById("search-input").focus(); // Focus back on the search input if not found
+        document.getElementById("search-input").focus();
       }
     } catch (error) {
       console.error("Error searching for product:", error);
-      document.getElementById("search-input").focus(); // Focus on input if an error occurs
+      document.getElementById("search-input").focus();
+    }
+  };
+
+  const handleSuggestionClick = (suggestionName) => {
+    setSearchQuery(suggestionName);
+
+    handleSearchSubmit({ preventDefault: () => {} });
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSearchSubmit(e);
     }
   };
 
@@ -188,14 +200,7 @@ function Navbar({ cart, setCart, id, setId }) {
                     <li
                       key={suggestion._id}
                       className="cursor-pointer hover:bg-gray-300 p-2"
-                      onClick={() => {
-                        document.getElementById("search-input").value =
-                          suggestion.name;
-                        document
-                          .getElementById("suggestions")
-                          .classList.add("hidden");
-                        navigate(`/product/${suggestion._id}`);
-                      }}
+                      onClick={() => handleSuggestionClick(suggestion.name)}
                     >
                       {suggestion.name}
                     </li>

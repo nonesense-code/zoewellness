@@ -23,7 +23,7 @@ function Checkout({ data }) {
   useEffect(() => {
     const total = products.reduce((total, product) => {
       const productQuantity =
-        data.find((item) => item.id === product._id)?.quantity || 0;
+        data.find((item) => item.id === product.product._id)?.quantity || 0;
       return total + productQuantity;
     }, 0);
 

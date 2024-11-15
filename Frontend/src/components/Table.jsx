@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import Loader from "./Loader";
 
 function Table({ cart, setCart }) {
   const [products, setProducts] = useState([]);
   const [quantities, setQuantities] = useState({});
   const [cartItems, setCartItems] = useState(new Set());
+  const [loading, setLoading] = useState(true);
   const url = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
@@ -13,22 +15,23 @@ function Table({ cart, setCart }) {
         const response = await axios.get(`${url}/api/product`);
         if (Array.isArray(response.data)) {
           setProducts(response.data);
-
+          setLoading(false);
           const savedData = JSON.parse(localStorage.getItem("data")) || [];
           const savedQuantities = savedData.reduce((acc, item) => {
             acc[item.id] = item.quantity;
             return acc;
           }, {});
           setQuantities(savedQuantities);
-
           const savedCartItems = new Set(savedData.map((item) => item.id));
           setCartItems(savedCartItems);
           setCart(savedCartItems.size);
         } else {
           console.log("Unexpected response format:", response.data);
+          setLoading(false);
         }
       } catch (error) {
         console.log("Error fetching data:", error);
+        setLoading(false);
       }
     };
 
@@ -99,6 +102,7 @@ function Table({ cart, setCart }) {
 
   return (
     <div className="mt-16">
+      {loading && <Loader />}
       <div className="container mx-auto p-4">
         <h1 className="text-2xl font-semibold text-center mb-4 text-white">
           Product List

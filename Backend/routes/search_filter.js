@@ -4,7 +4,6 @@ const Product = require("../models/Products");
 const { searchProducts } = require("../controllers/searchController");
 
 router.get("/item/:name", async (req, res) => {
-  console.log(searchQuery);
   const searchQuery = req.params.name;
   const normalizedSearchQuery = searchQuery.replace(/\s+/g, "").toLowerCase();
 

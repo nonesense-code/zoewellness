@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import Loader from "./Loader";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
 function Cart({ cart, setCart, data, setData }) {
@@ -7,7 +8,7 @@ function Cart({ cart, setCart, data, setData }) {
   const [loading, setLoading] = useState(true);
   const [id, setId] = useState([]);
   const [price, setPrice] = useState(0);
-  
+
   const url = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
@@ -92,12 +93,11 @@ function Cart({ cart, setCart, data, setData }) {
     localStorage.setItem("data", JSON.stringify(updatedData));
   };
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
   return (
     <section className="bg-white antialiased dark:bg-gray-900">
+      {loading && (
+        <Loader />
+      )}
       {products.length > 0 ? (
         <div className="mx-auto max-w-screen-xl min-h-screen px-4 2xl:px-0 py-20">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl">
