@@ -34,10 +34,19 @@ const Bill = ({ data, setData }) => {
   const [suggestions, setSuggestions] = useState([]);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [customerId, setCustomerId] = useState("");
+  const [customerName, setCustomerName] = useState("");
+  const [customerAddress, setCustomerAddress] = useState("");
+  const [customerContact, setCustomerContact] = useState("");
+  const [formData, setFormData] = useState({
+    name: "",
+    address: "",
+    id: "",
+    contact: "",
+  });
   const navigate = useNavigate();
   const url = import.meta.env.VITE_BACKEND_URL;
 
-  // Fetch product suggestions based on the search query
   const fetchSuggestions = async (query) => {
     const input = query.toUpperCase();
     if (input) {
@@ -53,7 +62,6 @@ const Bill = ({ data, setData }) => {
     }
   };
 
-  // Normalize the search query string
   const normalizeSearchQuery = (query) => {
     return query
       .replace(/[^a-zA-Z0-9\s-]/g, "")
@@ -63,7 +71,6 @@ const Bill = ({ data, setData }) => {
       .toLowerCase();
   };
 
-  // Handle search query submission
   const handleSearchSubmit = async (e) => {
     if (e.key === "Enter" || e.type === "click") {
       const normalizedSearchQuery = normalizeSearchQuery(searchQuery);
@@ -95,7 +102,6 @@ const Bill = ({ data, setData }) => {
     }
   };
 
-  // Fetch product details based on productId
   const fetchProductDetails = async (productId) => {
     const productExists = products.some(
       (product) => String(product.product._id) === String(productId)
@@ -127,7 +133,6 @@ const Bill = ({ data, setData }) => {
     }
   };
 
-  // Handle suggestion click and fetch product details
   const handleSuggestionClick = async (suggestionName) => {
     setSearchQuery(suggestionName);
     setSuggestions([]);
@@ -147,7 +152,6 @@ const Bill = ({ data, setData }) => {
     }
   };
 
-  // Load saved products from local storage
   useEffect(() => {
     const savedProducts = JSON.parse(localStorage.getItem("products"));
     if (savedProducts) {
@@ -155,7 +159,6 @@ const Bill = ({ data, setData }) => {
     }
   }, []);
 
-  // Remove a product from the list
   const handleRemoveProduct = (productId) => {
     const updatedProducts = products.filter(
       (product) => String(product.product._id) !== String(productId)
@@ -173,18 +176,15 @@ const Bill = ({ data, setData }) => {
     showToast("success", "Product removed from the list.");
   };
 
-  // Handle quantity change for a product
   const handleQuantityChange = (e, productId) => {
     let updatedQuantity = e.target.value;
 
-    // If the input is empty, keep it empty, don't set it to 0
     if (updatedQuantity === "") {
-      updatedQuantity = ""; // Allow empty string when quantity is cleared
+      updatedQuantity = "";
     } else {
-      // Ensure the value is a valid positive number, or reset it to 1
       updatedQuantity = parseInt(updatedQuantity, 10);
       if (isNaN(updatedQuantity) || updatedQuantity < 1) {
-        updatedQuantity = 1; // You can adjust this based on your requirements
+        updatedQuantity = 1;
       }
     }
 
@@ -203,7 +203,6 @@ const Bill = ({ data, setData }) => {
     setData(storedData);
   };
 
-  // Calculate the total amounts for the bill
   const calculateTotals = () => {
     let totalPV = 0;
     let totalBV = 0;
@@ -229,9 +228,7 @@ const Bill = ({ data, setData }) => {
 
   const { totalRate, totalPV, totalBV, totalQuantity } = calculateTotals();
 
-  // Handle saving the bill as an image
   const handleSaveBill = () => {
-    // Check if any product has quantity of 0
     const hasZeroQuantity = products.some((product) => {
       const quantity =
         data?.find((item) => item.id === product?.product._id)?.quantity || 0;
@@ -258,10 +255,17 @@ const Bill = ({ data, setData }) => {
     });
   };
 
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
   return (
     <div className="w-full min-h-screen py-20 px-8 bg-gray-900 text-white">
       <h1 className="text-3xl font-bold text-center mb-4">Search Products</h1>
-
       <div className="mb-4">
         <input
           type="text"
@@ -290,6 +294,63 @@ const Bill = ({ data, setData }) => {
         )}
       </div>
 
+      <div className="mb-8">
+        <h2 className="text-xl font-semibold text-center mb-4">
+          Customer Details
+        </h2>
+        <form className="space-y-4">
+          <div>
+            <input
+              type="text"
+              name="id"
+              value={customerId}
+              onChange={(e) => {
+                setCustomerId(e.target.value);
+              }}
+              placeholder="ID"
+              className="w-full p-2 bg-gray-800 text-white rounded-md"
+            />
+          </div>
+          <div>
+            <input
+              type="text"
+              name="name"
+              value={customerName}
+              onChange={(e) => {
+                setCustomerName(e.target.value);
+              }}
+              placeholder="Name"
+              className="w-full p-2 bg-gray-800 text-white rounded-md"
+            />
+          </div>
+          <div>
+            <input
+              type="text"
+              name="address"
+              value={customerAddress}
+              onChange={(e) => {
+                setCustomerAddress(e.target.value);
+              }}
+              placeholder="Address"
+              className="w-full p-2 bg-gray-800 text-white rounded-md"
+            />
+          </div>
+
+          <div>
+            <input
+              type="text"
+              name="contact"
+              value={customerContact}
+              onChange={(e) => {
+                setCustomerContact(e.target.value);
+              }}
+              placeholder="Contact"
+              className="w-full p-2 bg-gray-800 text-white rounded-md"
+            />
+          </div>
+        </form>
+      </div>
+
       <div>
         {loading ? (
           <div className="text-center">Loading...</div>
@@ -304,139 +365,153 @@ const Bill = ({ data, setData }) => {
               </button>
             </div>
 
-            <table
-              id="bill-table"
-              className="w-full bg-gray-900 table-auto border-collapse border border-gray-600"
-            >
-              <thead className="bg-gray-800">
-                <tr className="">
-                  <th className="px-4 py-2 pb-4 border-b text-center">Name</th>
-                  <th className="px-4 py-2 pb-4 border-b text-center">
-                    Volume
-                  </th>
-                  <th className="px-4 py-2 pb-4 border-b text-center">Rate</th>
-                  <th className="px-4 py-2 pb-4 border-b text-center">PV</th>
-                  <th className="px-4 py-2 pb-4 border-b text-center">BV</th>
-                  <th className="px-4 py-2 pb-4 border-b text-center">
-                    Quantity
-                  </th>
-                  <th className="px-4 py-2 pb-4 border-b text-center">
-                    Total PV
-                  </th>
-                  <th className="px-4 py-2 pb-4 border-b text-center">
-                    Total BV
-                  </th>
-                  <th className="px-4 py-2 pb-4 border-b text-center">
-                    Total Rate
-                  </th>
-                  <th className="remove-button px-4 py-2 pb-4 border-b text-center">
-                    Action
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {products.map((product, index) => {
-                  const quantity =
-                    data?.find((item) => item.id === product?.product._id)
-                      ?.quantity || 0;
+            <div id="bill-table" className="bg-gray-900">
+              <div className="user-details border-t-[1px] border-l-[1px] border-r-[1px] p-2 border-gray-600">
+                <ol>
+                  <li className="font-semibold tracking-wide">
+                    Id:<span className="font-light pl-1">{customerId}</span>
+                  </li>
+                  <li className="font-semibold tracking-wide">
+                    Name:<span className="font-light pl-1">{customerName}</span>
+                  </li>
+                  <li className="font-semibold tracking-wide">
+                    Address:<span className="font-light pl-1">{customerAddress}</span>
+                  </li>
+                  <li className="font-semibold tracking-wide">
+                    Contact:<span className="font-light pl-1">{customerContact}</span>
+                  </li>
+                </ol>
+              </div>
+              <table className="w-full bg-gray-900 table-auto border-collapse border border-gray-600">
+                <thead className="bg-gray-800">
+                  <tr>
+                    <th className="px-4 py-2 pb-4 border-b text-center">
+                      Name
+                    </th>
+                    <th className="px-4 py-2 pb-4 border-b text-center">
+                      Volume
+                    </th>
+                    <th className="px-4 py-2 pb-4 border-b text-center">
+                      Rate
+                    </th>
+                    <th className="px-4 py-2 pb-4 border-b text-center">PV</th>
+                    <th className="px-4 py-2 pb-4 border-b text-center">BV</th>
+                    <th className="px-4 py-2 pb-4 border-b text-center">
+                      Quantity
+                    </th>
+                    <th className="px-4 py-2 pb-4 border-b text-center">
+                      Total PV
+                    </th>
+                    <th className="px-4 py-2 pb-4 border-b text-center">
+                      Total BV
+                    </th>
+                    <th className="px-4 py-2 pb-4 border-b text-center">
+                      Total Rate
+                    </th>
+                    <th className="remove-button px-4 py-2 pb-4 border-b text-center">
+                      Action
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {products.map((product, index) => {
+                    const quantity =
+                      data?.find((item) => item.id === product?.product._id)
+                        ?.quantity || 0;
 
-                  const rate = product?.product?.rate || 0;
-                  const pv = product?.product?.pv || 0;
-                  const bv = product?.product?.bv || 0;
+                    const rate = product?.product?.rate || 0;
+                    const pv = product?.product?.pv || 0;
+                    const bv = product?.product?.bv || 0;
 
-                  const totalPV = pv * quantity;
-                  const totalBV = bv * quantity;
-                  const totalRate = rate * quantity;
+                    const totalPV = pv * quantity;
+                    const totalBV = bv * quantity;
+                    const totalRate = rate * quantity;
 
-                  return (
-                    <tr key={index}>
-                      <td className="px-4 py-2 border-b text-center">
-                        {product?.product?.name || "N/A"}
-                      </td>
-                      <td className="px-4 py-2 border-b text-center">
-                        {product?.product?.volume || "N/A"}
-                      </td>
-                      <td className="px-4 py-2 border-b text-center">
-                        {rate || "N/A"}
-                      </td>
-                      <td className="px-4 py-2 border-b text-center">
-                        {pv || "N/A"}
-                      </td>
-                      <td className="px-4 py-2 border-b text-center">
-                        {bv || "N/A"}
-                      </td>
-                      <td className="px-4 py-2 border-b text-center">
-                        <input
-                          type="number"
-                          value={quantity === 0 ? "" : quantity}
-                          placeholder="Enter qnt"
-                          id="quantity-field"
-                          onChange={(e) =>
-                            handleQuantityChange(e, product?.product._id)
-                          }
-                          className="w-20 bg-transparent h-10 text-center placeholder:text-sky-500/50"
-                          onKeyDown={(e) => {
-                            if (e.key === "Backspace" && quantity === "") {
-                              return;
+                    return (
+                      <tr key={index}>
+                        <td className="px-4 py-2 border-b text-center">
+                          {product?.product?.name || "N/A"}
+                        </td>
+                        <td className="px-4 py-2 border-b text-center">
+                          {product?.product?.volume || "N/A"}
+                        </td>
+                        <td className="px-4 py-2 border-b text-center">
+                          {rate || "N/A"}
+                        </td>
+                        <td className="px-4 py-2 border-b text-center">
+                          {pv || "N/A"}
+                        </td>
+                        <td className="px-4 py-2 border-b text-center">
+                          {bv || "N/A"}
+                        </td>
+                        <td className="px-4 py-2 border-b text-center">
+                          <input
+                            type="number"
+                            value={quantity === 0 ? "" : quantity}
+                            placeholder="Enter qnt"
+                            id="quantity-field"
+                            onChange={(e) =>
+                              handleQuantityChange(e, product?.product._id)
                             }
-                          }}
-                        />
-                      </td>
-                      <td className="px-4 py-2 border-b text-center">
-                        {totalPV.toFixed(2)}
-                      </td>
-                      <td className="px-4 py-2 border-b text-center">
-                        {totalBV.toFixed(2)}
-                      </td>
-                      <td className="px-4 py-2 border-b text-center">
-                        {totalRate.toFixed(2)}
-                      </td>
-                      <td className="px-4 py-2 border-b text-center">
-                        <div
-                          className="remove-button p-2 bg-red-600 rounded-lg text-sm font-semibold tracking-wide cursor-pointer"
-                          onClick={() =>
-                            handleRemoveProduct(product?.product._id)
-                          }
-                        >
-                          Remove
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-              <tfoot className="text-xs bg-gray-800 uppercase text-white">
-                <tr>
-                  <th scope="col" className="px-6 py-4 text-sm">
-                    Total
-                  </th>
-                  <th scope="col" className="px-6 py-4 text-sm"></th>
-                  <th scope="col" className="px-6 py-4 text-sm"></th>
-                  <th scope="col" className="px-6 py-4 text-sm">
-                    {totalPV.toFixed(2)}
-                  </th>
-                  <th scope="col" className="px-6 py-4 text-sm">
-                    {totalBV.toFixed(2)}
-                  </th>
-                  <th scope="col" className="px-6 py-4 text-sm">
-                    {totalQuantity}
-                  </th>
-                  <th scope="col" className="px-6 py-4 text-sm">
-                    {totalPV.toFixed(2)}
-                  </th>
-                  <th scope="col" className="px-6 py-4 text-sm">
-                    {totalBV.toFixed(2)}
-                  </th>
-                  <th scope="col" className="px-6 py-4 text-sm">
-                    {totalRate.toFixed(2)}
-                  </th>
-                  <th
-                    scope="col"
-                    className="remove-button px-6 py-4 text-sm"
-                  ></th>
-                </tr>
-              </tfoot>
-            </table>
+                            className="w-20 bg-transparent h-10 text-center placeholder:text-sky-500/50"
+                          />
+                        </td>
+                        <td className="px-4 py-2 border-b text-center">
+                          {totalPV.toFixed(2)}
+                        </td>
+                        <td className="px-4 py-2 border-b text-center">
+                          {totalBV.toFixed(2)}
+                        </td>
+                        <td className="px-4 py-2 border-b text-center">
+                          {totalRate.toFixed(2)}
+                        </td>
+                        <td className="px-4 py-2 border-b text-center">
+                          <div
+                            className="remove-button p-2 bg-red-600 rounded-lg text-sm font-semibold tracking-wide cursor-pointer"
+                            onClick={() =>
+                              handleRemoveProduct(product?.product._id)
+                            }
+                          >
+                            Remove
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+                <tfoot className="text-xs bg-gray-800 uppercase text-white">
+                  <tr>
+                    <th scope="col" className="px-6 py-4 text-sm">
+                      Total
+                    </th>
+                    <th scope="col" className="px-6 py-4 text-sm"></th>
+                    <th scope="col" className="px-6 py-4 text-sm"></th>
+                    <th scope="col" className="px-6 py-4 text-sm">
+                      {totalPV.toFixed(2)}
+                    </th>
+                    <th scope="col" className="px-6 py-4 text-sm">
+                      {totalBV.toFixed(2)}
+                    </th>
+                    <th scope="col" className="px-6 py-4 text-sm">
+                      {totalQuantity}
+                    </th>
+                    <th scope="col" className="px-6 py-4 text-sm">
+                      {totalPV.toFixed(2)}
+                    </th>
+                    <th scope="col" className="px-6 py-4 text-sm">
+                      {totalBV.toFixed(2)}
+                    </th>
+                    <th scope="col" className="px-6 py-4 text-sm">
+                      {totalRate.toFixed(2)}
+                    </th>
+                    <th
+                      scope="col"
+                      className="remove-button px-6 py-4 text-sm"
+                    ></th>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
           </div>
         ) : (
           <div className="text-center py-8 px-4 bg-gray-800 rounded-lg shadow-lg max-w-xl mx-auto">
