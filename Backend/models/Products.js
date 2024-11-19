@@ -19,7 +19,6 @@ databaseConnection();
 const productSchema = new mongoose.Schema({
   name: { type: String, required: true, unique: true },
   volume: { type: String, required: true },
-  qnt: { type: Number },
   rate: { type: Number, required: true },
   pv: {
     type: Number,

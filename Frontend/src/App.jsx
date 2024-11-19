@@ -4,6 +4,7 @@ import Home from "./components/Home";
 import About from "./components/About";
 import Cart from "./components/Cart";
 import Checkout from "./Checkout";
+import Bill from "./components/Bill";
 import Login from "./components/Login";
 import FilterProduct from "./components/FilterProduct";
 import {
@@ -61,6 +62,10 @@ function App() {
           />
           <Route path="/about" element={<About />} />
           <Route path="/login" element={<Login />} />
+          <Route
+            path="/bill"
+            element={<Bill data={data} setData={setData} />}
+          />
           <Route
             path="/product/:id"
             element={

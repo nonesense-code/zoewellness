@@ -24,7 +24,6 @@ const corsOptions = {
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,
 };
-
 app.use(cors(corsOptions));
 
 const homeRouter = require("../Backend/routes/home");

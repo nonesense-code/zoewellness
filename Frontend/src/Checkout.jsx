@@ -17,7 +17,7 @@ function Checkout({ data }) {
   const [pv, setPV] = useState(null);
   const [bv, setBV] = useState(null);
   const [totalQuantity, setTotalQuantity] = useState(0);
-  
+
   const url = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
@@ -87,6 +87,20 @@ function Checkout({ data }) {
       link.click();
     });
   };
+
+  async function fetchSuggestions(query) {
+    const input = query.toUpperCase();
+    if (input) {
+      try {
+        const response = await axios.get(`${url}/search/item/${input}`);
+        setSuggestions(response.data);
+      } catch (error) {
+        console.error("Error fetching suggestions:", error);
+      }
+    } else {
+      setSuggestions([]);
+    }
+  }
 
   useEffect(() => {
     const totals = products.reduce(
@@ -227,6 +241,91 @@ function Checkout({ data }) {
                           class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                         >
                           {product.product.name}
+                        </th>
+                        <th
+                          scope="row"
+                          class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                        >
+                          {product.product.volume}
+                        </th>
+                        <th
+                          scope="row"
+                          class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                        >
+                          {product.product.rate}
+                        </th>
+                        <th
+                          scope="row"
+                          class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                        >
+                          {product.product.pv
+                            ? product.product.pv.toFixed(2)
+                            : "n/a"}
+                        </th>
+                        <th
+                          scope="row"
+                          class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                        >
+                          {product.product.bv
+                            ? product.product.bv.toFixed(2)
+                            : "n/a"}
+                        </th>
+                        <th
+                          scope="row"
+                          class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                        >
+                          {data.find((item) => item.id === product.product._id)
+                            ?.quantity || 0}
+                        </th>
+                        <th
+                          scope="row"
+                          class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                        >
+                          {data.find((item) => item.id === product.product._id)
+                            ? (
+                                product.product.pv *
+                                data.find(
+                                  (item) => item.id === product.product._id
+                                ).quantity
+                              ).toFixed(2)
+                            : "0.00"}{" "}
+                        </th>
+                        <th
+                          scope="row"
+                          class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                        >
+                          {data.find((item) => item.id === product.product._id)
+                            ? (
+                                product.product.bv *
+                                data.find(
+                                  (item) => item.id === product.product._id
+                                ).quantity
+                              ).toFixed(2)
+                            : "0.00"}
+                        </th>
+                        <th
+                          scope="row"
+                          class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                        >
+                          {data.find((item) => item.id === product.product._id)
+                            ? (
+                                product.product.rate *
+                                data.find(
+                                  (item) => item.id === product.product._id
+                                ).quantity
+                              ).toFixed(2)
+                            : "0.00"}{" "}
+                        </th>
+                      </tr>
+                      <tr class="bg-white border-b dark:bg-stone-900 dark:border-gray-400">
+                        <th
+                          scope="row"
+                          class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                        >
+                          <input
+                            type="text"
+                            className="p-2 text-white rounded-lg bg-gray-600 text-[14px] outline-none"
+                          />
                         </th>
                         <th
                           scope="row"

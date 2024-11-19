@@ -15,6 +15,7 @@ import axios from "axios";
 const navigation = [
   { name: "Home", href: "/", current: true },
   { name: "Cart", href: "/cart", current: false },
+  { name: "Bill", href: "/bill", current: false },
   { name: "About", href: "/about", current: false },
 ];
 
@@ -82,13 +83,10 @@ function Navbar({ cart, setCart, id, setId }) {
       .replace(/\s/g, "")
       .toLowerCase();
 
-    console.log(normalizedSearchQuery);
-
     try {
       const response = await axios.get(
         `${url}/search/item/${normalizedSearchQuery}`
       );
-      console.log(`${url}/search/item/${normalizedSearchQuery}`);
       if (response.data.length > 0) {
         const productId = response.data[0]._id;
         setSuggestions([]);
