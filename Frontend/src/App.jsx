@@ -41,8 +41,25 @@ function App() {
   }, [data]);
 
   const isLoggedIn = !!Cookies.get("token");
+  const toastId = "login-toast"; // Unique toast ID for login warning
 
-  const toastId = "login-toast";
+  // Show the login toast only once when user tries to access checkout without logging in
+  useEffect(() => {
+    // Check if user is not logged in and if we're navigating to the `/checkout` route
+    if (
+      !isLoggedIn &&
+      window.location.pathname === "/checkout" &&
+      !toast.isActive(toastId)
+    ) {
+      toast.info("Please log in to proceed to checkout", {
+        toastId: toastId, // Ensure unique ID so it doesn't show multiple times
+        position: "top-center",
+        autoClose: 1000, // Toast will disappear after 1 second
+        pauseOnHover: false,
+        draggable: false,
+      });
+    }
+  }, [isLoggedIn]); // Dependency array to re-run only when login status changes
 
   return (
     <>
@@ -83,14 +100,7 @@ function App() {
               isLoggedIn ? (
                 <Checkout cart={cart} data={data} />
               ) : (
-                <>
-                  {/* Show the toast only once */}
-                  {!toast.isActive(toastId) &&
-                    toast.info("Please log in to proceed to checkout", {
-                      toastId: toastId, // Set a unique toast ID
-                    })}
-                  <Navigate to="/login" />
-                </>
+                <Navigate to="/login" />
               )
             }
           />
@@ -108,10 +118,10 @@ function App() {
         </Routes>
       </Router>
 
+      {/* ToastContainer is placed here so it is available globally */}
       <ToastContainer
-        position="bottom-right"
-        autoClose={2000}
-        limit={1}
+        position="top-center"
+        autoClose={1000}
         newestOnTop
         draggable={false}
         pauseOnHover={false}
